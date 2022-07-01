@@ -12,6 +12,8 @@ $route = $_SERVER['REQUEST_URI'];
 switch (strtok($route, "?")) {
     case '/Fblogin':
         echo "<a href='{$fb->loginUrl()}'>Login with Facebook</a>";
+        echo "<a href=/Providers/Discord.php>Login with Discord</a>";
+        echo "<a href=/Providers/Twitch.php>Login with Twitch</a>";
         break;
     case '/callback':
         $fb->callback();
