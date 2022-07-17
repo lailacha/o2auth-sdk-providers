@@ -32,12 +32,12 @@ class Server extends AbstractAuthProvider
 
     public function getUser(): array {
 
-        $data = $this->fetchUserData();
+        $data = $this->getData();
 
         $user = [
-            "first_name" => $data["first_name"] ?? "",
-            "last_name" => $data["last_name"] ?? "",
-            "provider_id" => $data["id"] ?? "",
+            "first_name" => $data["firstname"] ?? "",
+            "last_name" => $data["lastname"] ?? "",
+            "provider_id" => $data["user_id"] ?? "",
         ];
 
        return $user; 

@@ -32,13 +32,14 @@ class Facebook extends AbstractAuthProvider
 
     public function getUser(): array {
 
-        $data = $this->fetchUserData();
+        $data = $this->getData();
 
         $user = [
             "first_name" => $data["first_name"] ?? "",
             "last_name" => $data["last_name"] ?? "",
             "email" => $data["email"] ?? "",
             "provider_id" => $data["id"] ?? "",
+            "provider_name" => "facebook",
         ];
 
        return $user; 

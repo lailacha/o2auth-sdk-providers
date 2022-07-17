@@ -27,22 +27,26 @@ class Twitch extends AbstractAuthProvider
 
     public function getBaseUri()
     {
-        return "hhttps://api.twitch.tv/helix/channels";
+        return "https://api.twitch.tv/helix/users";
     }
+
 
     public function getUser(): array {
 
-        $data = $this->fetchUserData();
+        $data = $this->getData();
 
         $user = [
+            "user_name" => $data["login"] ?? "",
             "first_name" => $data["first_name"] ?? "",
             "last_name" => $data["last_name"] ?? "",
             "email" => $data["email"] ?? "",
             "provider_id" => $data["id"] ?? "",
+            "provider_name" => "twitch",
         ];
 
        return $user; 
     }
+
 
 }
 

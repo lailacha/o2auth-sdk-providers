@@ -100,6 +100,7 @@ use App\Exceptions\NoAuhorizationCodeException;
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'GET',
         CURLOPT_HTTPHEADER => array(
+            'Client-ID: ' . $this->client_id,
             'Authorization: Bearer ' . $_SESSION['access_token']),
         ));
 
@@ -107,7 +108,7 @@ use App\Exceptions\NoAuhorizationCodeException;
 
         curl_close($curl);
 
-        return $response;
+        return json_decode($response, true);
 
     }
 
@@ -117,7 +118,7 @@ use App\Exceptions\NoAuhorizationCodeException;
 
         $params = $this->options ? http_build_query($this->options) : "";
 
-        $url = "{$this->getBaseUri()}/me?{$params}";
+        $url = "{$this->getBaseUri()}?{$params}";
 
         $options = array(
             'http' => array(
