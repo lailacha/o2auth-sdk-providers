@@ -1,3 +1,1 @@
-{"name":"MonApp","url":"http:\/\/localhost:8081","redirect_uri":"http:\/\/localhost:8081\/callback","client_id":"621e3b8d1f964","client_secret":"621e3b8d1f966"}
-{"name":"MonApp2","url":"http:\/\/localhost:8081","redirect_uri":"http:\/\/localhost:8081\/callback","client_id":"621e3c7eaac68","client_secret":"621e3c7eaac6a"}
-{"name":"MonApp3","url":"http:\/\/localhost:8080","redirect_uri":"http:\/\/localhost:8080\/callback","client_id":"628de606be7a5","client_secret":"628de606be7a7"}
+{"name":"learner-creator","url":"http:\/\/localhost:8081","redirect_uri":"http://localhost:8081/serverAuth","client_id":"62c0a5028df3c","client_secret":"62c0a5028df45"}

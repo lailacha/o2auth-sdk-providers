@@ -7,7 +7,7 @@ use App\AbstractAuthProvider;
 require_once("AbstractAuthPovider.php");
 
 
-class Facebook extends AbstractAuthProvider
+class Server extends AbstractAuthProvider
 {
 
     public function __construct(string $client_id, string $client_secret, string $redirect_uri, string $scope, array $params)
@@ -17,17 +17,17 @@ class Facebook extends AbstractAuthProvider
    
     public function getRequestTokenUri()
     {
-        return "https://graph.facebook.com/v2.10/oauth/access_token";
+        return "http://host.docker.internal:8080/token";
     }
 
     public function getAuthorizeUri()
     {
-        return "https://www.facebook.com/v2.10/dialog/oauth";
+        return "http://localhost:8080/auth";
     }
 
     public function getBaseUri()
     {
-        return "https://graph.facebook.com/v2.10/me";
+        return "http://host.docker.internal:8080/me";
     }
 
     public function getUser(): array {
@@ -37,7 +37,6 @@ class Facebook extends AbstractAuthProvider
         $user = [
             "first_name" => $data["first_name"] ?? "",
             "last_name" => $data["last_name"] ?? "",
-            "email" => $data["email"] ?? "",
             "provider_id" => $data["id"] ?? "",
         ];
 

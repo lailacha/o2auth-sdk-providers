@@ -89,8 +89,10 @@ function auth()
 {
     ['client_id' => $clientId, 'scope'=> $scope, 'state' => $state, 'redirect_uri' => $redirect_uri] = $_GET;
     $app = findAppBy(['client_id'=> $clientId, 'redirect_uri' => $redirect_uri]);
+   
     if (!$app) {
-        http_response_code(404);
+        echo var_dump($_GET);
+        //http_response_code(404);
         return;
     }
     if (findTokenBy(['client_id' => $clientId])) {
@@ -105,12 +107,14 @@ function auth()
 
 function authSuccess()
 {
+
     ['client_id' => $clientId, 'state' => $state] = $_GET;
     $app = findAppBy(['client_id'=> $clientId]);
     if (!$app) {
         http_response_code(404);
         return;
     }
+
     $code = [
         "code" => bin2hex(random_bytes(16)),
         "user_id" => 1,
@@ -118,6 +122,7 @@ function authSuccess()
         "expiresAt" => time() + (60*5),
     ];
     insertCode($code);
+
     header("Location: ${app['redirect_uri']}?state=${state}&code=${code['code']}");
 }
 
@@ -129,8 +134,10 @@ function handleAuthCode($clientId)
         throw new \InvalidArgumentException(404);
     }
     if ($code['expiresAt'] < time()) {
+        echo "expired";
         throw new \InvalidArgumentException(400);
     }
+    
     return $code['user_id'];
 }
 
@@ -150,6 +157,7 @@ function token()
     try {
         $app = findAppBy(['client_id'=> $clientId, 'client_secret' => $clientSecret, 'redirect_uri' => $redirect]);
         if (!$app) {
+            echo "app not found";
             throw new \InvalidArgumentException(401);
         }
 
@@ -165,12 +173,14 @@ function token()
             "client_id" => $clientId,
             "user_id"=> $userId,
         ];
+
         insertToken($token);
         http_response_code(201);
         echo json_encode([
             "access_token" => $token['access_token'],
             "expires_in" => $token['expiresAt']
         ]);
+
     } catch (\UnhandledMatchError $e) {
         http_response_code(400);
     } catch (\InvalidArgumentException $e) {

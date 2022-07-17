@@ -12,7 +12,16 @@ utiliser des factorys
 2/ On doit créer la fonction qui s'execute à la redirection
     
   
+3/ Créer un user qui aura les champs suivant
+    provider-id
+    provider-name
+    firstname
+    lastname
+    mail
 
+
+
+une seule callback pour tous les providers
 
 Faire un factory qui créé via un tableau de config notre provider
 il prend en argument les applications et leurs secret etc

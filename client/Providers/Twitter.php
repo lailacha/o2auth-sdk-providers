@@ -7,7 +7,7 @@ use App\AbstractAuthProvider;
 require_once("AbstractAuthPovider.php");
 
 
-class Facebook extends AbstractAuthProvider
+class Twitter extends AbstractAuthProvider
 {
 
     public function __construct(string $client_id, string $client_secret, string $redirect_uri, string $scope, array $params)
@@ -17,18 +17,21 @@ class Facebook extends AbstractAuthProvider
    
     public function getRequestTokenUri()
     {
-        return "https://graph.facebook.com/v2.10/oauth/access_token";
+        return "https://api.twitter.com/oauth/request_token";
     }
 
     public function getAuthorizeUri()
     {
-        return "https://www.facebook.com/v2.10/dialog/oauth";
+        return "";
+        //twitter auth url to get a code from twitter
+        //return "https://api.twitter.com/oauth/authorize";
     }
 
     public function getBaseUri()
     {
-        return "https://graph.facebook.com/v2.10/me";
+        return "https://graph.facebook.com/v2.10";
     }
+
 
     public function getUser(): array {
 

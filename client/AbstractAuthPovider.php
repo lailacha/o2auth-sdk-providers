@@ -13,6 +13,7 @@ use App\Exceptions\NoAuhorizationCodeException;
     private string $scope;
     private string $method = 'GET';
     private string $grant_type = 'authorization_code';
+    private array $options = [];
     private string $access_token;
 
 
@@ -22,21 +23,27 @@ use App\Exceptions\NoAuhorizationCodeException;
 
     abstract public function getAuthorizeUri();
 
+    abstract public function getUser();
 
-    public function __construct(string $client_id, string $client_secret, string $redirect_uri, string $scope)
+
+    public function __construct(string $client_id, string $client_secret, string $redirect_uri, ?string $scope, ?array $options = [])
     {
         $this->client_id = $client_id;
         $this->client_secret = $client_secret;
         $this->redirect_uri = $redirect_uri;
         $this->scope = $scope;
+        $this->options = $options;
     }
 
 
-    public function callback()
+    public function getToken()
     {
-        if($_GET["code"])
+       // $result = (file_get_contents("http://host.docker.internal:8080/token?redirect_uri=http%3A%2F%2Flocalhost%3A8081%2FserverAuth&client_id=62c00b59b3dfd&client_secret=62c00b59b3e0d&grant_type=authorization_code&code=1233dd712a790ea504ae00070afdf717"));
+
+       if($_GET["code"])
         {
-            $data =  http_build_query([
+            
+            $requestData =  http_build_query([
                 "redirect_uri" => $this->redirect_uri,
                 "client_id" => $this->client_id,
                 "client_secret" => $this->client_secret,
@@ -44,31 +51,86 @@ use App\Exceptions\NoAuhorizationCodeException;
                 "code" => $_GET["code"]
             ]);
 
-            $url = "{$this->getRequestTokenUri()}?{$data}";
+            $url = "{$this->getRequestTokenUri()}?{$requestData}";
 
-            $result = json_decode(file_get_contents($url), true);
+            //Post with curl request
+            $ch = curl_init();
 
-            $this->accessToken = $result['access_token'];
 
-    
-            $url = "{$this->getBaseUri()}/me";
-            $options = array(
-                'http' => array(
-                    'method' => $this->method,
-                    'header' => 'Authorization: Bearer ' . $this->accessToken
-                )
-            );
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $requestData);
+            $result = (curl_exec($ch));
+            $result = json_decode($result, true);
+                            
+            $_SESSION['access_token'] = $result['access_token'];    
         }
         else
         {
-            throw new NoAuhorizationCodeException("Invalid authorization code");
+            throw new \InvalidArgumentException("Invalid authorization code");
         }
+
+    
+    }
+
+
+    public function getData() {
+        
+        $params = http_build_query($this->options);
+
+        $url = "{$this->getBaseUri()}?{$params}";
+
+        $options = array(
+            'http' => array(
+                'method' => "POST",
+                'header' => 'Authorization: Bearer ' . $_SESSION['access_token']
+            )
+        );
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+        CURLOPT_URL =>  $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer ' . $_SESSION['access_token']),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        return $response;
+
+    }
+
+
+    public function fetchUserData()
+    {
+
+        $params = $this->options ? http_build_query($this->options) : "";
+
+        $url = "{$this->getBaseUri()}/me?{$params}";
+
+        $options = array(
+            'http' => array(
+                'method' => "POST",
+                'header' => 'Authorization: Bearer ' . $_SESSION['access_token']
+            )
+        );
 
         $context = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
-        $result = json_decode($result, true);
-        echo "Hello {$result['name']}";
-    
+     
+        return json_decode($result, true);
+
     }
 
     public function loginUrl() {

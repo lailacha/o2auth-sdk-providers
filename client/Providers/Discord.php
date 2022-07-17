@@ -7,7 +7,7 @@ use App\AbstractAuthProvider;
 require_once("AbstractAuthPovider.php");
 
 
-class Facebook extends AbstractAuthProvider
+class Discord extends AbstractAuthProvider
 {
 
     public function __construct(string $client_id, string $client_secret, string $redirect_uri, string $scope, array $params)
@@ -17,17 +17,17 @@ class Facebook extends AbstractAuthProvider
    
     public function getRequestTokenUri()
     {
-        return "https://graph.facebook.com/v2.10/oauth/access_token";
+        return "https://discord.com/api/oauth2/token";
     }
 
     public function getAuthorizeUri()
     {
-        return "https://www.facebook.com/v2.10/dialog/oauth";
+        return "https://discord.com/api/oauth2/authorize";
     }
 
     public function getBaseUri()
     {
-        return "https://graph.facebook.com/v2.10/me";
+        return "https://discord.com/api/users/@me";
     }
 
     public function getUser(): array {
