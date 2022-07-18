@@ -2,11 +2,6 @@
 
 namespace App;
 
-use App\Providers\Facebook;
-use App\Providers\Twitter;
-use App\Providers\Server;
-use App\Providers\Discord;
-use App\Providers\Twitch;
 use App\ProviderFactory;
 
 
@@ -62,20 +57,9 @@ $config = [
     $server = $factory->getProvider("server");
     $discord = $factory->getProvider("discord");
 
-// $discord = new Discord("997451119636787221","WqvhvHLWT_TjSVNMVEijeqGD5CN5Mzrb","http://localhost:8081/discordAuth","identify guilds",[]);
-// $fb = new Facebook("440227080924149", "29a8bccc0ca25ddb6d71bfac4692d9ba", "http://localhost:8081/fbAUth", "public_profile,email", ["fields" => "name, email"]);
-// $server = new Server("62c0a5028df3c", "62c0a5028df45","http://localhost:8081/serverAuth", "t", [] );
-// $twitch = new Twitch("xbsvdclkcukplhqkwbd2jztapzha1t", "d70fzo7fxa4jlt1vtxj50tekie58db","http://localhost:8081/twitchAuth", "user_read", [] );
-
 
 $route = $_SERVER['REQUEST_URI'];
 switch (strtok($route, "?")) {
-    case '/Fblogin':
-        echo "<a href='{$fb->loginUrl()}'>Login with Facebook</a>";
-        break;
-    case '/serverLogin':
-    echo "<a href='{$server->loginUrl()}'>Login with Server</a>";
-    break;    
     case '/fbAUth':
         $fb->getToken();
         $data = $fb->getData();
@@ -93,12 +77,6 @@ switch (strtok($route, "?")) {
         $twitch->getToken();
         $data = $twitch->getUser();
         break;
-    
-    case '/user':
-        $data = $fb->getUser();
-        //echo var_dump($data);
-        break;
-
 }
 ?>
 
@@ -108,7 +86,7 @@ switch (strtok($route, "?")) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>O2Auth</title>
 </head>
 
 <style>
@@ -138,10 +116,16 @@ body {
 }
 
 a {
-    display: block;
+    display: flex;
     padding: 1em;
     border-radius: 20px;
     width: 50%;
+    text-decoration: none;
+}
+
+
+svg{
+    margin-left: auto;
 }
 
 a.facebook{
@@ -171,9 +155,11 @@ a:not(:first-child){
 .result{
     background-color: white;
 }
+
 </style>
 <body>
 <div class="result">
+    User:
 <?php echo isset($data) ?  var_dump($data) : ""?>
 </div>
     

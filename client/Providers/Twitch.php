@@ -33,8 +33,8 @@ class Twitch extends AbstractAuthProvider
 
     public function getUser(): array {
 
-        $data = $this->getData();
-
+        $data = $this->getData()["data"][0];
+        
         $user = [
             "user_name" => $data["login"] ?? "",
             "first_name" => $data["first_name"] ?? "",
