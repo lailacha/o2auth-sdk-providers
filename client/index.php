@@ -46,7 +46,7 @@ $config = [
         "client_id" => "440227080924149",
         "client_secret" => "29a8bccc0ca25ddb6d71bfac4692d9ba",
         "redirect_uri" => "http://localhost:8081/fbAUth",
-        "scope" => "publish_actions, public_profile,email",
+        "scope" => "public_profile,email",
         "params" => ["fields" => "name, email, first_name, last_name"]
     ]
     ];
@@ -62,8 +62,8 @@ $route = $_SERVER['REQUEST_URI'];
 switch (strtok($route, "?")) {
     case '/fbAUth':
         $fb->getToken();
-        $data = $fb->getData();
-              break;
+        $data = $fb->getUser();
+        break;
     case '/serverAuth':
         $server->getToken();
         $data = $server->getUser();
@@ -144,7 +144,7 @@ a.discord {
 }
 
 a.twitch {
-    background-color: #e228ab;
+    background-color: #650ed6;
     color: white;
 }
 
